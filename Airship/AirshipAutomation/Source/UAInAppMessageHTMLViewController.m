@@ -136,8 +136,18 @@ NSString *const UAInAppNativeBridgeDismissCommand = @"dismiss";
 }
 
 - (void)dealloc {
+    
+    [self stopLoading];
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIWindowDidBecomeVisibleNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIWindowDidBecomeHiddenNotification object:nil];
+}
+
+- (void) stopLoading {
+    [_webView stopLoading];
+    
+    _webView.navigationDelegate = nil;
+    _webView.UIDelegate = nil;
 }
 
 - (void)windowDidBecomeVisibleNotification:(NSNotification *)notification {
@@ -195,10 +205,12 @@ NSString *const UAInAppNativeBridgeDismissCommand = @"dismiss";
 }
 
 - (void)dismissWithoutResolution  {
+    [self stopLoading];
     [self.resizableParent dismissWithoutResolution];
 }
 
 - (void)dismissWithResolution:(UAInAppMessageResolution *)resolution  {
+    [self stopLoading];
     [self.resizableParent dismissWithResolution:resolution];
 }
 
@@ -257,6 +269,7 @@ NSString *const UAInAppNativeBridgeDismissCommand = @"dismiss";
 #pragma mark UANativeBridgeDelegate
 
 - (void)close {
+    [self stopLoading];
     [self dismissWithResolution:[UAInAppMessageResolution userDismissedResolution]];
 }
 

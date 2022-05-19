@@ -37,6 +37,17 @@
     return [super loadRequest:request];
 }
 
+- (void)dealloc
+{
+    if (self.isLoading)
+    {
+       self.stopLoading;
+        
+        self.navigationDelegate = nil;
+        self.UIDelegate = nil;
+    }
+}
+
 @end
 
 #endif
